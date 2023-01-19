@@ -1,10 +1,9 @@
 use clap::{self, Parser};
 use std::fs;
-use std::io;
 use std::io::prelude::*;
 use std::path::Path;
 use std::time::Instant;
-use zip::{CompressionMethod, ZipWriter};
+use zip::ZipWriter;
 
 #[derive(Parser, Default, Debug)]
 #[command(author, version, about, long_about = None)] // Read from `Cargo.toml`
@@ -28,7 +27,10 @@ async fn main() {
     let options =
         zip::write::FileOptions::default().compression_method(zip::CompressionMethod::Deflated);
 
-    let folders = vec![Path::new("./test-input/folder1"), Path::new("./test-input/folder2")];
+    let folders = vec![
+        Path::new("./test-input/folder1"),
+        Path::new("./test-input/folder2"),
+    ];
 
     for folder in folders {
         for entry in fs::read_dir(folder).unwrap() {
