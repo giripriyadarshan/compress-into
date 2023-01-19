@@ -1,4 +1,5 @@
 use clap::{self, Parser};
+use indicatif::HumanDuration;
 use std::fs;
 use std::io::prelude::*;
 use std::path::Path;
@@ -8,8 +9,11 @@ use zip::ZipWriter;
 #[derive(Parser, Default, Debug)]
 #[command(author, version, about, long_about = None)] // Read from `Cargo.toml`
 struct Arguments {
-    #[clap(short, long, default_value = ".")]
-    path: String,
+    #[clap(short, long)]
+    path: Option<Vec<String>>,
+
+    #[clap(short, long)]
+    specific_path: Option<String>,
 
     #[clap(short, long, default_value = "0")]
     level: u8,
@@ -20,6 +24,8 @@ async fn main() {
     let started = Instant::now();
 
     let args = Arguments::parse();
+
+    println!("{:?}", args);
 
     let zip_path = Path::new("./output/test.zip");
     let file = fs::File::create(&zip_path).unwrap();
@@ -53,4 +59,6 @@ async fn main() {
         }
     }
     zip.finish().unwrap();
+
+    println!("Finished in {}", HumanDuration(started.elapsed()));
 }
